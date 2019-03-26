@@ -14,16 +14,12 @@ simplesmente você pode abrir o programa inserir o pid do programa desejado, e a
 - __Sistemas Operacionais Suportados__
 
 você também pode abrir o programa com argumentos, diretamente com o pid e o endereço que deseja ler ou escrever.
+
+
 |  Operating Systems  | Supported 32-bit | Supported 64-bit |
 |:-------------------:|:----------------:|:----------------:|
-| Windows XP SP3      |         ✔        |         ✔        |
-| Windows Server 2003 |         ✔        |         ✔        |
-| Windows Vista       |         ✔        |         ✔        |
-| Windows Server 2008 |         ✔        |         ✔        |
-| Windows 7           |         ✔        |         ✔        |
-| Windows Server 2012 |         ✔        |         ✔        |
-| Windows 8/8.1       |         ✔        |         ✔        |
-| Windows 10          |         ✔        |         ✔        |
+| Windows 10          |         ✔        |         ✔       |
+
 
 ## Como usar ?
 1° = Escreva o valor do pid referente ao programa em que você quer fazer a manipulação da memoria
