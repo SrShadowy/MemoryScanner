@@ -9,7 +9,7 @@ enum protectType : DWORD
 std::vector<MEMORY_BASIC_INFORMATION>mapp;
 
 bool mapmemory(HANDLE phandle, protectType pTopy) {//aprendiz saiu correndo, pau no cu de quem ta lendo!
-
+                                                   //The apprentice leaves running, dick in the ass of the one reading!
 	DWORD Proibido = (PAGE_NOCACHE | PAGE_GUARD | PAGE_NOACCESS);
 
 	MEMORY_BASIC_INFORMATION mbi;
