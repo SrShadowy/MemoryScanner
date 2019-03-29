@@ -22,11 +22,13 @@ você também pode abrir o programa com argumentos, diretamente com o pid e o en
 
 
 ## Como usar ?
-1° = Escreva o valor do pid referente ao programa em que você quer fazer a manipulação da memoria
-2° = Escolha o valor que você quer pesquisar(int)
-3° = Após escolher o valor escolha se você quer fazer NextScan, Write ou NewScan. 
+1° = Escreva o valor do pid referente ao programa em que você quer fazer a manipulação da memoria.
+2° = Escolha o tipo do valor (4bytes , flaot, etc).
+3° = Faça a pesquisa digitando os valores referentes desejados.
+4° = Após escolher o valor escolha se você quer fazer NextScan, Write ou NewScan. 
 
 
 links
 # Referencias
-https://www.cheatengine.org https://github.com/cheat-engine/cheat-engine
+https://www.cheatengine.org 
+https://github.com/cheat-engine/cheat-engine
