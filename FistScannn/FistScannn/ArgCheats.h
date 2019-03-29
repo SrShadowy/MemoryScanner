@@ -9,9 +9,9 @@ bool argcheat(int argc, const char *argv[]) {
 			char readorwrite, typo;
 
 			HANDLE phandle = OpenProcess(PROCESS_ALL_ACCESS, 0, strtoul(argv[1], NULL, 10));
-
+			
 			DWORD addr = strtoul(argv[2], NULL, 16);
-			cout << "Address " << addr << "  PID: " << strtoul(argv[1], NULL, 10) << std::endl;
+			printf("Address %X PID: %d\n\n", addr, strtoul(argv[1], NULL, 10));
 			cout << "if yes what should we do? [r] read [w] write: ";
 			cin >> readorwrite;
 
@@ -51,7 +51,7 @@ bool argcheat(int argc, const char *argv[]) {
 			}
 		}
 		else {
-			cout << "Pid nao encontrado\n";
+			cout << "Error Pid\n";
 			return false;
 		}
 	}

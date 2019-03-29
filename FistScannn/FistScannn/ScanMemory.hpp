@@ -6,6 +6,14 @@ enum protectType : DWORD
 	Writable = (PAGE_EXECUTE_READWRITE | PAGE_READWRITE)
 };
 
+enum TypeV : DWORD
+{
+	Bytes = 0x0,
+	D2Bytes = 0x1,
+	D4Bytes = 0x3,
+	D8Bytes = 0x7
+};
+
 std::vector<MEMORY_BASIC_INFORMATION>mapp;
 
 bool mapmemory(HANDLE phandle, protectType pTopy) {//aprendiz saiu correndo, pau no cu de quem ta lendo!
@@ -61,7 +69,9 @@ BOOL ListProcessModules(HANDLE hModuleSnap, uintptr_t addr)
 }
 
 
-std::vector<uintptr_t> scanner(DWORD valor, HANDLE phandle, DWORD pid, int x) {
+
+template <typename T>
+std::vector<uintptr_t> scanner(T valor, HANDLE phandle, DWORD pid, int x, TypeV TheValue) {
 	std::vector<uintptr_t> Addres;
 	Addres.clear();
 	HANDLE hModuleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid);
@@ -78,11 +88,11 @@ std::vector<uintptr_t> scanner(DWORD valor, HANDLE phandle, DWORD pid, int x) {
 		for (int i = 0; i < catchorra.RegionSize; ++i) {
 			auto allocadPoint = uintptr_t(&bf[i]);
 
-			auto vVal = *reinterpret_cast<int*>(allocadPoint);
-			if (vVal == valor)
+			auto vVal = *reinterpret_cast<T*>(allocadPoint);
+			if (vVal == valor || vVal <= (valor + 1) && vVal >= (valor - 1))
 			{
 				Addres.push_back((uintptr_t)catchorra.BaseAddress + i);
-				i += 3; //4BYTES
+				i += TheValue;
 			}
 
 		}
@@ -129,16 +139,17 @@ std::vector<uintptr_t> scanner(DWORD valor, HANDLE phandle, DWORD pid, int x) {
 	CloseHandle(hModuleSnap);
 	return Addres;
 }
-std::vector<uintptr_t> NxtScan(DWORD valor, HANDLE phandle, std::vector<uintptr_t>Old, int x, DWORD pid) {
+template <typename T>
+std::vector<uintptr_t> NxtScan(T valor, HANDLE phandle, std::vector<uintptr_t>Old, int x, DWORD pid) {
 	x = 0;
 	std::vector<uintptr_t> Addres;
 	Addres.clear();
-	DWORD OldValue = valor;
+	T OldValue = valor;
 	HANDLE hModuleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid);
 	for (int i = 0; i < Old.size(); ++i) {
 
 		ReadProcessMemory(phandle, (LPVOID)Old[i], &OldValue, sizeof(OldValue), NULL);
-		if (OldValue == valor) {
+		if (OldValue == valor || OldValue >= (valor - 1) && OldValue <= (valor + 1)) {
 			Addres.push_back(Old[i]);
 		}
 
