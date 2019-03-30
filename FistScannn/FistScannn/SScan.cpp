@@ -52,7 +52,7 @@ label:
 		Tp = Bytes;
 		std::cin >> ValorScan;
 
-		Addres = scanner<byte>(ValorScan, phandle, pid, x, Tp);
+		Addres = scanner<byte>(ValorScan, phandle, pid, x, Tp, typ);
 		break;
 
 	case by2Bytes:
@@ -60,20 +60,20 @@ label:
 		Tp = D2Bytes;
 		//scanf_s("%i", vl);
 		std::cin >> ValorScan;
-		Addres = scanner<__int32>(ValorScan, phandle, pid, x, Tp);
+		Addres = scanner<__int32>(ValorScan, phandle, pid, x, Tp, typ);
 		break;
 
 	case by8Bytes:
 		Tp = D8Bytes;
 		std::cin >> ValorScan;
-		Addres = scanner<DWORD>(ValorScan, phandle, pid, x, Tp);
+		Addres = scanner<DWORD>(ValorScan, phandle, pid, x, Tp, typ);
 		break;
 
 
 	case by4Bytes:
 		Tp = D4Bytes;
 		std::cin >> ValorScan;
-		Addres = scanner<int>(ValorScan, phandle, pid, x, Tp);
+		Addres = scanner<int>(ValorScan, phandle, pid, x, Tp, typ);
 		break;
 
 	case byFloat:
@@ -83,7 +83,7 @@ label:
 		std::cout << "\n\n" << vl << "\n\n";
 		ValorScan = vl;*/
 		std::cin >> ValorScan;
-		Addres = scanner<float>(ValorScan, phandle, pid, x, Tp);
+		Addres = scanner<float>(ValorScan, phandle, pid, x, Tp, typ);
 
 	default:
 		break;
@@ -100,24 +100,23 @@ label:
 		switch (typ)
 		{
 		case byBytes:
-			Addres = NxtScan<byte>(ValorScan, phandle, Addres, x, pid);
+			Addres = NxtScan<byte>(ValorScan, phandle, Addres, x, pid, typ);
 			break;
 
 		case by2Bytes:
-			Addres = NxtScan<__int32>(ValorScan, phandle, Addres, x, pid);
+			Addres = NxtScan<__int32>(ValorScan, phandle, Addres, x, pid, typ);
 			break;
 
 		case by8Bytes:
-			Addres = NxtScan<DWORD>(ValorScan, phandle, Addres, x, pid);
+			Addres = NxtScan<DWORD>(ValorScan, phandle, Addres, x, pid, typ);
 			break;
 
-
 		case by4Bytes:
-			Addres = NxtScan<int>(ValorScan, phandle, Addres, x, pid);
+			Addres = NxtScan<int>(ValorScan, phandle, Addres, x, pid, typ);
 			break;
 
 		case byFloat:
-			Addres = NxtScan<float>(ValorScan, phandle, Addres, x, pid);
+			Addres = NxtScan<float>(ValorScan, phandle, Addres, x, pid, typ);
 
 		default:
 			break;
@@ -189,9 +188,63 @@ label:
 			x = 0;
 			goto label;
 		}
+		else if (x == 4)
+		{
+			std::cout << "\n>> Addr... << :";
+			std::cin >> x;
+			auto ret = 0;
+			if (typ == 1) {
+				byte vl = 0xc;
+				Tp = Bytes;
+				ret = ReadProcessMemory(phandle, (LPVOID)Addres[x], &vl, sizeof(vl), NULL);
+				std::cout << vl << std::endl;
+			}
+			else if (typ == 2)
+			{
+				__int32 vl = 0;
+				Tp = D2Bytes;
+				ret = ReadProcessMemory(phandle, (LPVOID)Addres[x], &vl, sizeof(vl), NULL);
+				std::cout << vl << std::endl;
+			}
+			else if (typ == 3) {
+				float vl = 1.0;
+				Tp = D4Bytes;
+				ret = ReadProcessMemory(phandle, (LPVOID)Addres[x], &vl, sizeof(vl), NULL);
+				std::cout << vl << std::endl;
+
+			}
+			else if (typ == 8) {
+				Tp = D8Bytes;		
+				ret = ReadProcessMemory(phandle, (LPVOID)Addres[x], &ValorScan, sizeof(ValorScan), NULL);
+				std::cout << ValorScan << std::endl;
+			}
+			else {
+				Tp = D4Bytes;
+				ret = ReadProcessMemory(phandle, (LPVOID)Addres[x], &ValorScan, sizeof(ValorScan), NULL);
+				std::cout << ValorScan << std::endl;
+			}
 
 
+			if (ret)
+				std::cout << "Sucess!!! \n";
+			else
+				std::cout << "Error :C \n";
+
+			std::cout << "NextScan[0] NewScan[1] Another exit: ";
+			std::cin >> x;
+			switch (x)
+			{
+			case 0:
+				continue;
+			case 1:
+				goto label;
+				break;
+			default:
+				break;
+			}
+		}
 	}
+	
 
 	CloseHandle(phandle);
 

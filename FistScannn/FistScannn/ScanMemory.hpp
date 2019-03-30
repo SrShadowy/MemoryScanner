@@ -71,7 +71,7 @@ BOOL ListProcessModules(HANDLE hModuleSnap, uintptr_t addr)
 
 
 template <typename T>
-std::vector<uintptr_t> scanner(T valor, HANDLE phandle, DWORD pid, int x, TypeV TheValue) {
+std::vector<uintptr_t> scanner(T valor, HANDLE phandle, DWORD pid, int x, TypeV TheValue, int tp_s) {
 	std::vector<uintptr_t> Addres;
 	Addres.clear();
 	HANDLE hModuleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid);
@@ -87,14 +87,25 @@ std::vector<uintptr_t> scanner(T valor, HANDLE phandle, DWORD pid, int x, TypeV 
 
 		for (int i = 0; i < catchorra.RegionSize; ++i) {
 			auto allocadPoint = uintptr_t(&bf[i]);
-
+		
 			auto vVal = *reinterpret_cast<T*>(allocadPoint);
-			if (vVal == valor || vVal <= (valor + 1) && vVal >= (valor - 1))
-			{
-				Addres.push_back((uintptr_t)catchorra.BaseAddress + i);
-				i += TheValue;
+
+			if (tp_s == 3){
+				if (vVal == valor || vVal <= (valor + 1) && vVal >= (valor - 1))
+				{
+					Addres.push_back((uintptr_t)catchorra.BaseAddress + i);
+					i += TheValue;
+				}
+			}
+			else {
+				if (vVal == valor)
+				{
+					Addres.push_back((uintptr_t)catchorra.BaseAddress + i);
+					i += TheValue;
+				}
 			}
 
+			
 		}
 
 		LocalFree(bf);
@@ -140,7 +151,7 @@ std::vector<uintptr_t> scanner(T valor, HANDLE phandle, DWORD pid, int x, TypeV 
 	return Addres;
 }
 template <typename T>
-std::vector<uintptr_t> NxtScan(T valor, HANDLE phandle, std::vector<uintptr_t>Old, int x, DWORD pid) {
+std::vector<uintptr_t> NxtScan(T valor, HANDLE phandle, std::vector<uintptr_t>Old, int x, DWORD pid, int tp_s) {
 	x = 0;
 	std::vector<uintptr_t> Addres;
 	Addres.clear();
@@ -149,10 +160,16 @@ std::vector<uintptr_t> NxtScan(T valor, HANDLE phandle, std::vector<uintptr_t>Ol
 	for (int i = 0; i < Old.size(); ++i) {
 
 		ReadProcessMemory(phandle, (LPVOID)Old[i], &OldValue, sizeof(OldValue), NULL);
+		if (tp_s == 3){
 		if (OldValue == valor || OldValue >= (valor - 1) && OldValue <= (valor + 1)) {
 			Addres.push_back(Old[i]);
 		}
-
+		}
+		else {
+			if (OldValue == valor) {
+				Addres.push_back(Old[i]);
+			}
+		}
 	}
 	printf("Found %d \n", Addres.size());
 	if (Addres.size() > 100) {
